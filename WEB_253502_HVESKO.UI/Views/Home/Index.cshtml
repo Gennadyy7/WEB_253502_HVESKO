@@ -1,12 +1,16 @@
-﻿﻿@{
+﻿@model List<string>﻿
+
+@{
     ViewBag.Title = "Index";
 }
 
-<h1>Лабораторная работа 1</h1>
+<h1>@ViewData["Headline"]</h1> <!-- Используем ViewData для отображения заголовка -->
 <h3>Список</h3>
 <ol type="A">
-    <li>элемент 1 списка</li>
-    <li>элемент 2 списка</li>
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <li>@Model[i]</li> <!-- Динамическое наполнение списка -->
+    }
 </ol>
 <h3>Форма</h3>
 <form method="post" action="/submit">
@@ -29,6 +33,10 @@
     <div class="form-check">
         <input class="form-check-input" type="radio" name="radio" id="radio3" value="3">
         <label class="form-check-label" for="radio3">Радио-3</label>
+    </div>
+    <div class="mb-3">
+        <label for="selectDemo" class="form-label">Выберите элемент:</label>
+        <select id="selectDemo" name="selectedId" class="form-select" asp-items="ViewBag.ItemSelectList"></select>
     </div>
     <div class="mb-3">
         <label for="login" class="form-label">Логин:</label>
