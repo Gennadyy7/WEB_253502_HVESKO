@@ -10,4 +10,8 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WEB_253502_HVESKO.Domain\WEB_253502_HVESKO.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
