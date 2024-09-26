@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WEB_253502_HVESKO.Domain.Entities
 {
-    internal class Category
+    public class Category
     {
         public int ID { get; set; }
 
