@@ -1,0 +1,6 @@
+@WEB_253502_HVESKO.API_HostAddress = http://localhost:5056
+
+GET {{WEB_253502_HVESKO.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
