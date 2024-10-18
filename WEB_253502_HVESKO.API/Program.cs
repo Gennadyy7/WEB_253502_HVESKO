@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WEB_253502_HVESKO.API.Data;
+using WEB_253502_HVESKO.API.Services.CategoryService;
+using WEB_253502_HVESKO.API.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
 
 var app = builder.Build();
 

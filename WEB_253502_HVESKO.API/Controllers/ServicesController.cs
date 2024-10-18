@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WEB_253502_HVESKO.API.Data;
+using WEB_253502_HVESKO.API.Services.ProductService;
 using WEB_253502_HVESKO.Domain.Entities;
+using WEB_253502_HVESKO.Domain.Models;
 
 namespace WEB_253502_HVESKO.API.Controllers
 {
@@ -14,95 +16,61 @@ namespace WEB_253502_HVESKO.API.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductService _productService;
 
-        public ServicesController(AppDbContext context)
+        public ServicesController(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
-        // GET: api/Services
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Service>>> GetProducts()
+        // GET: api/Services/menu/{category}
+        [HttpGet("menu/{category?}")]
+        public async Task<ActionResult<ResponseData<ListModel<Service>>>> GetServices(string? category, int pageNo = 1, int pageSize = 3)
         {
-            return await _context.Products.ToListAsync();
+            var response = await _productService.GetProductListAsync(category, pageNo, pageSize);
+            if (!response.Successfull)
+                return NotFound(response.ErrorMessage);
+
+            return Ok(response);
         }
 
         // GET: api/Services/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Service>> GetService(int id)
+        public async Task<ActionResult<ResponseData<Service>>> GetService(int id)
         {
-            var service = await _context.Products.FindAsync(id);
+            var response = await _productService.GetProductByIdAsync(id);
+            if (!response.Successfull)
+                return NotFound(response.ErrorMessage);
 
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            return service;
+            return Ok(response);
         }
 
         // PUT: api/Services/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutService(int id, Service service)
         {
-            if (id != service.ID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(service).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ServiceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _productService.UpdateProductAsync(id, service, null);
             return NoContent();
         }
 
         // POST: api/Services
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Service>> PostService(Service service)
+        public async Task<ActionResult<ResponseData<Service>>> PostService(Service service)
         {
-            _context.Products.Add(service);
-            await _context.SaveChangesAsync();
+            var response = await _productService.CreateProductAsync(service, null);
 
-            return CreatedAtAction("GetService", new { id = service.ID }, service);
+            if (!response.Successfull)
+                return BadRequest(response.ErrorMessage);
+
+            return CreatedAtAction("GetService", new { id = service.ID }, response);
         }
 
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteService(int id)
         {
-            var service = await _context.Products.FindAsync(id);
-            if (service == null)
-            {
-                return NotFound();
-            }
-
-            _context.Products.Remove(service);
-            await _context.SaveChangesAsync();
-
+            await _productService.DeleteProductAsync(id);
             return NoContent();
-        }
-
-        private bool ServiceExists(int id)
-        {
-            return _context.Products.Any(e => e.ID == id);
         }
     }
 }

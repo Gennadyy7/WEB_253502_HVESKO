@@ -1,6 +1,26 @@
+using WEB_253502_HVESKO.UI;
 using WEB_253502_HVESKO.UI.Extensions;
+using WEB_253502_HVESKO.UI.Services.CategoryService;
+using WEB_253502_HVESKO.UI.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Получаем UriData из конфигурации
+var uriData = builder.Configuration.GetSection("UriData").Get<UriData>();
+
+// Регистрируем сервисы для запросов к API
+builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
+{
+    opt.BaseAddress = new Uri(uriData.ApiUri);
+});
+
+builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
+{
+    opt.BaseAddress = new Uri(uriData.ApiUri);
+});
+
+// Остальная конфигурация
+builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
