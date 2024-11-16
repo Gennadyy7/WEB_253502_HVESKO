@@ -56,7 +56,7 @@ namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages
 
             var service = await _productService.GetProductByIdAsync(Service.ID);
             Service.ImagePath = service.Data.ImagePath;
-            await _productService.UpdateProductAsync(1, Service, null);
+            await _productService.UpdateProductAsync(Service.ID, Service, null);
 
             return RedirectToPage("./Index");
         }
