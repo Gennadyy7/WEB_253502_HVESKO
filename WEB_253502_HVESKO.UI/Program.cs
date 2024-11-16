@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using WEB_253502_HVESKO.UI;
+using WEB_253502_HVESKO.UI.Data;
 using WEB_253502_HVESKO.UI.Extensions;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
@@ -7,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Получаем UriData из конфигурации
 var uriData = builder.Configuration.GetSection("UriData").Get<UriData>();
+
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.RegisterCustomServices();
 
 // Регистрируем сервисы для запросов к API
 builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
@@ -18,13 +26,6 @@ builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
 {
     opt.BaseAddress = new Uri(uriData.ApiUri);
 });
-
-// Остальная конфигурация
-builder.Services.AddControllersWithViews();
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.RegisterCustomServices();
 
 var app = builder.Build();
 
@@ -46,5 +47,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

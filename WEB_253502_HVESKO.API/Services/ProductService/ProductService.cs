@@ -71,6 +71,7 @@ namespace WEB_253502_HVESKO.API.Services.ProductService
                 // Обновление данных продукта
                 existingProduct.Name = product.Name;
                 existingProduct.Description = product.Description;
+                existingProduct.Price = product.Price;
 
                 // Если передан файл изображения, обновите изображение
                 if (formFile != null)

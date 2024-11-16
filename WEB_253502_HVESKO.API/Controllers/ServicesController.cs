@@ -23,9 +23,9 @@ namespace WEB_253502_HVESKO.API.Controllers
             _productService = productService;
         }
 
-        // GET: api/Services/menu/{category}
-        [HttpGet("menu/{category?}")]
-        public async Task<ActionResult<ResponseData<ListModel<Service>>>> GetServices(string? category, int pageNo = 1, int pageSize = 3)
+        // GET: api/Services/{category}
+        [HttpGet("{category?}")]
+        public async Task<ActionResult<ResponseData<ListModel<Service>>>> GetServices([FromRoute] string? category = null, [FromQuery] int pageNo = 1, [FromQuery] int pageSize = 3)
         {
             var response = await _productService.GetProductListAsync(category, pageNo, pageSize);
             if (!response.Successfull)
@@ -35,8 +35,8 @@ namespace WEB_253502_HVESKO.API.Controllers
         }
 
         // GET: api/Services/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseData<Service>>> GetService(int id)
+        [HttpGet("id-{id}")]
+        public async Task<ActionResult<ResponseData<Service>>> GetService([FromRoute] int id)
         {
             var response = await _productService.GetProductByIdAsync(id);
             if (!response.Successfull)

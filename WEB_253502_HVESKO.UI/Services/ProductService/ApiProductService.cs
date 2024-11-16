@@ -8,6 +8,8 @@ using WEB_253502_HVESKO.Domain.Models;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 using System.Text.Json;
 
+namespace WEB_253502_HVESKO.UI.Services.ProductService;
+
 public class ApiProductService : IProductService
 {
     private readonly HttpClient _httpClient;
@@ -29,18 +31,26 @@ public class ApiProductService : IProductService
     public async Task<ResponseData<ListModel<Service>>> GetProductListAsync(string? categoryNormalizedName, int pageNo = 1)
     {
         // Подготовка URL
-        var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}services/");
+        var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}Services");
 
         // Добавляем категорию в маршрут
         if (categoryNormalizedName != null)
         {
             urlString.Append($"{categoryNormalizedName}/");
         }
+        else
+        {
+            urlString.Append("?");
+        }
 
         // Добавляем номер страницы в маршрут
         if (pageNo > 1)
         {
-            urlString.Append($"page{pageNo}");
+            urlString.Append($"pageNo={pageNo}");
+        }
+        else
+        {
+            urlString.Append("pageNo=1");
         }
 
         // Добавляем размер страницы в строку запроса
@@ -71,7 +81,8 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Service>> GetProductByIdAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"services/{id}");
+        var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}Services/id-{id}");
+        var response = await _httpClient.GetAsync(new Uri(urlString.ToString()));
 
         if (response.IsSuccessStatusCode)
         {
@@ -92,7 +103,7 @@ public class ApiProductService : IProductService
 
     public async Task UpdateProductAsync(int id, Service product, IFormFile? formFile)
     {
-        var uri = new Uri($"{_httpClient.BaseAddress}services/{id}");
+        var uri = new Uri($"{_httpClient.BaseAddress}Services/{id}");
 
         var response = await _httpClient.PutAsJsonAsync(uri, product, _serializerOptions);
 
@@ -111,7 +122,7 @@ public class ApiProductService : IProductService
 
     public async Task DeleteProductAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"services/{id}");
+        var response = await _httpClient.DeleteAsync($"Services/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -122,7 +133,7 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Service>> CreateProductAsync(Service product, IFormFile? formFile)
     {
-        var uri = new Uri($"{_httpClient.BaseAddress}services");
+        var uri = new Uri($"{_httpClient.BaseAddress}Services");
 
         var response = await _httpClient.PostAsJsonAsync(uri, product, _serializerOptions);
 

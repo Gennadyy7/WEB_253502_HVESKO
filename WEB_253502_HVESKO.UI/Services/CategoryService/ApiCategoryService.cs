@@ -1,9 +1,12 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using WEB_253502_HVESKO.Domain.Entities;
 using WEB_253502_HVESKO.Domain.Models;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
+
+namespace WEB_253502_HVESKO.UI.Services.CategoryService;
 
 public class ApiCategoryService : ICategoryService
 {
@@ -23,7 +26,8 @@ public class ApiCategoryService : ICategoryService
 
     public async Task<ResponseData<List<Category>>> GetCategoryListAsync()
     {
-        var response = await _httpClient.GetAsync("categories");
+        var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}Category/");
+        var response = await _httpClient.GetAsync(new Uri(urlString.ToString()));
 
         if (response.IsSuccessStatusCode)
         {
