@@ -7,6 +7,7 @@ using WEB_253502_HVESKO.Domain.Entities;
 using WEB_253502_HVESKO.Domain.Models;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 using System.Text.Json;
+using WEB_253502_HVESKO.UI.Services.FileService;
 
 namespace WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -16,8 +17,9 @@ public class ApiProductService : IProductService
     private readonly ILogger<ApiProductService> _logger;
     private readonly JsonSerializerOptions _serializerOptions;
     private readonly string _pageSize;
+    private readonly IFileService _fileService;
 
-    public ApiProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiProductService> logger)
+    public ApiProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiProductService> logger, IFileService fileService)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -26,6 +28,7 @@ public class ApiProductService : IProductService
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         _pageSize = configuration.GetSection("ItemsPerPage").Value ?? "3";
+        _fileService = fileService;
     }
 
     public async Task<ResponseData<ListModel<Service>>> GetProductListAsync(string? categoryNormalizedName, int pageNo = 1)
@@ -133,6 +136,13 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Service>> CreateProductAsync(Service product, IFormFile? formFile)
     {
+        product.ImagePath = "Images/noimage.jpg";
+        if (formFile != null)
+        {
+            var imageUrl = await _fileService.SaveFileAsync(formFile);
+            if (!string.IsNullOrEmpty(imageUrl))
+                product.ImagePath = imageUrl;
+        }
         var uri = new Uri($"{_httpClient.BaseAddress}Services");
 
         var response = await _httpClient.PostAsJsonAsync(uri, product, _serializerOptions);

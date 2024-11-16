@@ -28,6 +28,9 @@ namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages
         [BindProperty]
         public Service Service { get; set; } = default!;
 
+        [BindProperty]
+        public IFormFile Image { get; set; }
+
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
@@ -36,7 +39,7 @@ namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages
                 return Page();
             }
 
-            await _productService.CreateProductAsync(Service, null);
+            await _productService.CreateProductAsync(Service, Image);
 
             return RedirectToPage("./Index");
         }
