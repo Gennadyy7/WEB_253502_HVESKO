@@ -74,11 +74,11 @@ namespace WEB_253502_HVESKO.API.Services.ProductService
                 existingProduct.Price = product.Price;
 
                 // Если передан файл изображения, обновите изображение
-                if (formFile != null)
+                if (product.ImagePath != null)
                 {
-                    var imageUrl = await SaveImageAsync(existingProduct.ID, formFile);
-                    existingProduct.ImagePath = imageUrl;
+                    existingProduct.ImagePath = product.ImagePath;
                 }
+                existingProduct.CategoryId = product.CategoryId;
 
                 _context.Products.Update(existingProduct);
                 await _context.SaveChangesAsync();

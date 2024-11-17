@@ -27,6 +27,9 @@ namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages
         [BindProperty]
         public Service Service { get; set; } = default!;
 
+        [BindProperty]
+        public IFormFile? Image { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -56,7 +59,7 @@ namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages
 
             var service = await _productService.GetProductByIdAsync(Service.ID);
             Service.ImagePath = service.Data.ImagePath;
-            await _productService.UpdateProductAsync(Service.ID, Service, null);
+            await _productService.UpdateProductAsync(Service.ID, Service, Image);
 
             return RedirectToPage("./Index");
         }

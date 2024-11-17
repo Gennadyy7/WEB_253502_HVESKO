@@ -103,9 +103,32 @@ public class ApiProductService : IProductService
         _logger.LogError($"Продукт с ID {id} не найден. Error: {response.StatusCode}");
         return ResponseData<Service>.Error($"Продукт с ID {id} не найден.");
     }
+    public static string GetFileName(string path)
+    {
+        // Если это URL, извлекаем все после последнего '/'
+        if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
+        {
+            Uri uri = new Uri(path);
+            return Path.GetFileName(uri.LocalPath);
+        }
 
+        // Если это относительный путь, просто извлекаем имя файла
+        return Path.GetFileName(path);
+    }
     public async Task UpdateProductAsync(int id, Service product, IFormFile? formFile)
     {
+
+        if (formFile != null)
+        {
+            var path = product.ImagePath;
+            var filename = GetFileName(path);
+            await _fileService.DeleteFileAsync(filename);
+            //await _fileService.DeleteFileAsync(path);
+            var imageUrl = await _fileService.SaveFileAsync(formFile);
+            if (!string.IsNullOrEmpty(imageUrl))
+                product.ImagePath = imageUrl;
+        }
+
         var uri = new Uri($"{_httpClient.BaseAddress}Services/{id}");
 
         var response = await _httpClient.PutAsJsonAsync(uri, product, _serializerOptions);
@@ -114,12 +137,6 @@ public class ApiProductService : IProductService
         {
             _logger.LogError($"Не удалось обновить продукт с ID {id}. Error: {response.StatusCode}");
             throw new Exception($"Не удалось обновить продукт с ID {id}");
-        }
-
-        // Если есть изображение, можно добавить логику его отправки
-        if (formFile != null)
-        {
-            // Логика для загрузки изображения
         }
     }
 

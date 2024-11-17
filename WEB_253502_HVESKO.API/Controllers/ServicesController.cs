@@ -50,7 +50,7 @@ namespace WEB_253502_HVESKO.API.Controllers
         public async Task<IActionResult> PutService(int id, Service service)
         {
             await _productService.UpdateProductAsync(id, service, null);
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Services
