@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WEB_253502_HVESKO.Domain.Entities;
-using WEB_253502_HVESKO.UI.Data;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 

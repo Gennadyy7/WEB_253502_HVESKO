@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using WEB_253502_HVESKO.UI;
-using WEB_253502_HVESKO.UI.Data;
 using WEB_253502_HVESKO.UI.Extensions;
 using WEB_253502_HVESKO.UI.HelperClasses;
 using WEB_253502_HVESKO.UI.Services.Authentication;
+using WEB_253502_HVESKO.UI.Services.Authorization;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -36,7 +36,7 @@ builder.Services
             .Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<ITokenAccessor, KeycloakTokenAccessor>();
-//builder.Services.AddHttpClient<IAuthService, KeycloakAuthService>();
+builder.Services.AddHttpClient<IAuthService, KeycloakAuthService>();
 var keycloakData =
         builder.Configuration.GetSection("Keycloak").Get<KeycloakData>();
 builder.Services

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WEB_253502_HVESKO.Domain.Entities;
 using WEB_253502_HVESKO.Domain.Models;
-using WEB_253502_HVESKO.UI.Data;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 
 namespace WEB_253502_HVESKO.UI.Areas.Admin.Pages

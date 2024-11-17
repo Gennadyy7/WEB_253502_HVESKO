@@ -34,7 +34,7 @@ namespace WEB_253502_HVESKO.UI.Services.Authorization
             {
                 return (false, ex.Message);
             }
-            var avatarUrl = "/images/default-profile-picture.jfif";
+            var avatarUrl = "/images/default-profile-picture.png";
             // сохранить Avatar, если аватар был передан при регистрации
             if (avatar != null)
             {

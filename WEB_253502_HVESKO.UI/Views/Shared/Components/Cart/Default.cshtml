@@ -1,5 +1,7 @@
-﻿@model dynamic
-
-<a class="navbar-text ms-auto" asp-area="" asp-controller="Cart" asp-action="Index">
-    @Model.Total,0 руб <i class="fa-solid fa-cart-shopping"></i> (@Model.Count)
-</a>
+﻿﻿
+@if (User.Identity.IsAuthenticated)
+{
+    <a href="#" class="navbar-text ms-auto">
+        00,0 руб <i class="fa-solid fa-cart-shopping"></i> (0)
+    </a>
+}
