@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace WEB_253502_HVESKO.API.Controllers
 
         // GET: api/Services/5
         [HttpGet("id-{id}")]
+        [Authorize]
         public async Task<ActionResult<ResponseData<Service>>> GetService([FromRoute] int id)
         {
             var response = await _productService.GetProductByIdAsync(id);
@@ -47,6 +49,7 @@ namespace WEB_253502_HVESKO.API.Controllers
 
         // PUT: api/Services/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> PutService(int id, Service service)
         {
             await _productService.UpdateProductAsync(id, service, null);
@@ -55,6 +58,7 @@ namespace WEB_253502_HVESKO.API.Controllers
 
         // POST: api/Services
         [HttpPost]
+        [Authorize(Policy = "admin")]
         public async Task<ActionResult<ResponseData<Service>>> PostService(Service service)
         {
             var response = await _productService.CreateProductAsync(service, null);
@@ -67,6 +71,7 @@ namespace WEB_253502_HVESKO.API.Controllers
 
         // DELETE: api/Services/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "admin")]
         public async Task<IActionResult> DeleteService(int id)
         {
             await _productService.DeleteProductAsync(id);

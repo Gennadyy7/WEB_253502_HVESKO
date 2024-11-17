@@ -8,6 +8,7 @@ using WEB_253502_HVESKO.Domain.Models;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 using System.Text.Json;
 using WEB_253502_HVESKO.UI.Services.FileService;
+using WEB_253502_HVESKO.UI.Services.Authentication;
 
 namespace WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -18,8 +19,9 @@ public class ApiProductService : IProductService
     private readonly JsonSerializerOptions _serializerOptions;
     private readonly string _pageSize;
     private readonly IFileService _fileService;
+    private readonly ITokenAccessor _tokenAccessor;
 
-    public ApiProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiProductService> logger, IFileService fileService)
+    public ApiProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiProductService> logger, IFileService fileService, ITokenAccessor tokenAccessor)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -29,10 +31,12 @@ public class ApiProductService : IProductService
         };
         _pageSize = configuration.GetSection("ItemsPerPage").Value ?? "3";
         _fileService = fileService;
+        _tokenAccessor = tokenAccessor;
     }
 
     public async Task<ResponseData<ListModel<Service>>> GetProductListAsync(string? categoryNormalizedName, int pageNo = 1)
     {
+        await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
         // Подготовка URL
         var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}Services");
 
@@ -84,6 +88,7 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Service>> GetProductByIdAsync(int id)
     {
+        await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
         var urlString = new StringBuilder($"{_httpClient.BaseAddress.AbsoluteUri}Services/id-{id}");
         var response = await _httpClient.GetAsync(new Uri(urlString.ToString()));
 
@@ -117,7 +122,7 @@ public class ApiProductService : IProductService
     }
     public async Task UpdateProductAsync(int id, Service product, IFormFile? formFile)
     {
-
+        await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
         if (formFile != null)
         {
             var path = product.ImagePath;
@@ -142,6 +147,7 @@ public class ApiProductService : IProductService
 
     public async Task DeleteProductAsync(int id)
     {
+        await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
         var response = await _httpClient.DeleteAsync($"Services/{id}");
 
         if (!response.IsSuccessStatusCode)
@@ -153,6 +159,7 @@ public class ApiProductService : IProductService
 
     public async Task<ResponseData<Service>> CreateProductAsync(Service product, IFormFile? formFile)
     {
+        await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
         product.ImagePath = "Images/noimage.jpg";
         if (formFile != null)
         {

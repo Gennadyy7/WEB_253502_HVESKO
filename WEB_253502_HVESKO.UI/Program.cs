@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using WEB_253502_HVESKO.UI;
 using WEB_253502_HVESKO.UI.Data;
 using WEB_253502_HVESKO.UI.Extensions;
+using WEB_253502_HVESKO.UI.HelperClasses;
+using WEB_253502_HVESKO.UI.Services.Authentication;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -25,6 +30,33 @@ builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
 builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
 {
     opt.BaseAddress = new Uri(uriData.ApiUri);
+});
+
+builder.Services
+            .Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient<ITokenAccessor, KeycloakTokenAccessor>();
+//builder.Services.AddHttpClient<IAuthService, KeycloakAuthService>();
+var keycloakData =
+        builder.Configuration.GetSection("Keycloak").Get<KeycloakData>();
+builder.Services
+.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddJwtBearer()
+.AddOpenIdConnect(options =>
+{
+    options.Authority = $"{keycloakData.Host}/auth/realms/{keycloakData.Realm}";
+    options.ClientId = keycloakData.ClientId;
+    options.ClientSecret = keycloakData.ClientSecret;
+    options.ResponseType = OpenIdConnectResponseType.Code;
+    options.Scope.Add("openid"); // Customize scopes as needed
+    options.SaveTokens = true;
+    options.RequireHttpsMetadata = false; // позволяет обращаться к     локальному Keycloak по http
+    options.MetadataAddress = $"{keycloakData.Host}/realms/{keycloakData.Realm}/.well-known/openid-configuration";
 });
 
 var app = builder.Build();

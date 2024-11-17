@@ -1,16 +1,21 @@
 ﻿
+using WEB_253502_HVESKO.UI.Services.Authentication;
+
 namespace WEB_253502_HVESKO.UI.Services.FileService
 {
     public class ApiFileService : IFileService
     {
         private readonly HttpClient _httpClient;
+        private readonly ITokenAccessor _tokenAccessor;
 
-        public ApiFileService(HttpClient httpClient)
+        public ApiFileService(HttpClient httpClient, ITokenAccessor tokenAccessor)
         {
+            _tokenAccessor = tokenAccessor;
             _httpClient = httpClient;
         }
         public async Task DeleteFileAsync(string fileName)
         {
+            await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
             var requestUri = new Uri(_httpClient.BaseAddress, $"/api/Files/DeleteFile?fileName={fileName}");
 
             var request = new HttpRequestMessage
@@ -29,6 +34,7 @@ namespace WEB_253502_HVESKO.UI.Services.FileService
 
         public async Task<string> SaveFileAsync(IFormFile formFile)
         {
+            await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient);
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Post
