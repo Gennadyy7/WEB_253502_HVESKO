@@ -43,7 +43,7 @@ public class ApiProductService : IProductService
         // Добавляем категорию в маршрут
         if (categoryNormalizedName != null)
         {
-            urlString.Append($"{categoryNormalizedName}/");
+            urlString.Append($"/{categoryNormalizedName}?");
         }
         else
         {

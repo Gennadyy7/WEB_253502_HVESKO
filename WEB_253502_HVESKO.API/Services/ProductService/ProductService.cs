@@ -23,6 +23,9 @@ namespace WEB_253502_HVESKO.API.Services.ProductService
 
             var query = _context.Products.AsQueryable();
 
+            if (categoryNormalizedName == "Все")
+                categoryNormalizedName = null;
+
             if (!string.IsNullOrEmpty(categoryNormalizedName))
             {
                 query = query.Where(p => p.Category.NormalizedName == categoryNormalizedName);

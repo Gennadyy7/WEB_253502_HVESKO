@@ -43,39 +43,8 @@
             </li>
         </ul>
     </div>
-    <div class="row row-cols-md-3 g-5 m-1">
-        @foreach (var item in Model.Items)
-        {
-            <div class="col">
-                <div class="card">
-                    <img src="@item.ImagePath" class="card-img-top" alt="@item.Name">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text">@item.Description</p>
-                        <p class="badge bg-secondary">@item.Price BYN</p>
-                        <div>
-                            <a asp-controller="Cart" asp-action="Add" asp-route-id=@item.ID asp-route-returnUrl=@returnUrl class="btn btn-primary">Добавить в корзину</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
+    <div id="product-list-container">
+        <partial name="_CatalogPartial" />
     </div>
-    <nav aria-label="navigation">
-        <ul class="pagination">
-            <li class="page-item @(Model.CurrentPage == 1 || Model.CurrentPage == 0 ? "disabled" : "")">
-                <a class="page-link" href="?pageNo=@prev&category=@category">Previous</a>
-            </li>
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
-                    <a class="page-link" href="?pageNo=@i&category=@category">@i</a>
-                </li>
-            }
-            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="?pageNo=@next&category=@category">Next</a>
-            </li>
-        </ul>
-    </nav>
 
 </div>

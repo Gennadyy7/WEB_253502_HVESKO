@@ -71,19 +71,7 @@
     </tbody>
 </table>
 
-<nav aria-label="navigation">
-    <ul class="pagination">
-        <li class="page-item @(Model.Services.CurrentPage == 1 || Model.Services.CurrentPage == 0 ? "disabled" : "")">
-            <a class="page-link" href="?pageNo=@prev">Previous</a>
-        </li>
-        @for (int i = 1; i <= Model.Services.TotalPages; i++)
-        {
-            <li class="page-item @(Model.Services.CurrentPage == i ? "active" : "")">
-                <a class="page-link" href="?pageNo=@i">@i</a>
-            </li>
-        }
-        <li class="page-item @(Model.Services.CurrentPage == Model.Services.TotalPages ? "disabled" : "")">
-            <a class="page-link" href="?pageNo=@next">Next</a>
-        </li>
-    </ul>
-</nav>
+<Pager current-page="@Model.Services.CurrentPage"
+       total-pages="@Model.Services.TotalPages"
+       admin="true">
+</Pager>

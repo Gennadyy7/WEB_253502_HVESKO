@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    var request = ViewContext.HttpContext.Request;
+    var returnUrl = request.Path + request.QueryString.ToUriComponent();
+    string category = request.Query["category"].ToString();
+    int prev = Model.CurrentPage == 1 ? 1 : Model.CurrentPage - 1;
+    int next = Model.CurrentPage == Model.TotalPages ? Model.TotalPages : Model.CurrentPage + 1;
+}
+
+<div class="row row-cols-md-3 g-5 m-1">
+    @foreach (var item in Model.Items)
+    {
+        <div class="col">
+            <div class="card">
+                <img src="@item.ImagePath" class="card-img-top" alt="@item.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p class="badge bg-secondary">@item.Price BYN</p>
+                    <div>
+                        <a asp-controller="Cart" asp-action="Add" asp-route-id=@item.ID asp-route-returnUrl=@returnUrl class="btn btn-primary">Добавить в корзину</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<Pager current-page="@Model.CurrentPage"
+       total-pages="@Model.TotalPages"
+       category="@ViewData["currentCategory"]"></Pager>

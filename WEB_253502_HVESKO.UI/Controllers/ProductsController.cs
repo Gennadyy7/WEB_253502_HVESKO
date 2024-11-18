@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WEB_253502_HVESKO.UI.Extensions;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -14,7 +15,7 @@ namespace WEB_253502_HVESKO.UI.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
-        public async Task<IActionResult> Index(string category, int pageNo = 1)
+        public async Task<IActionResult> Index([FromServices] IConfiguration config, string category, int pageNo = 1)
         {
             var categoriesResponse = await _categoryService.GetCategoryListAsync();
             if (!categoriesResponse.Successfull)
@@ -24,6 +25,13 @@ namespace WEB_253502_HVESKO.UI.Controllers
             var productResponse = await _productService.GetProductListAsync(category, pageNo);
             if (!productResponse.Successfull)
                 return NotFound(productResponse.ErrorMessage);
+
+            // Проверяем, является ли запрос AJAX-запросом
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_CatalogPartial", productResponse.Data); // Возвращаем частичное представление
+            }
+
             return View(productResponse.Data);
         }
     }
