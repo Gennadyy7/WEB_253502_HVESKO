@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using WEB_253502_HVESKO.Domain.Entities;
 using WEB_253502_HVESKO.UI;
 using WEB_253502_HVESKO.UI.Extensions;
 using WEB_253502_HVESKO.UI.HelperClasses;
 using WEB_253502_HVESKO.UI.Services.Authentication;
 using WEB_253502_HVESKO.UI.Services.Authorization;
+using WEB_253502_HVESKO.UI.Services.Cart;
 using WEB_253502_HVESKO.UI.Services.CategoryService;
 using WEB_253502_HVESKO.UI.Services.ProductService;
 
@@ -34,9 +36,16 @@ builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
 
 builder.Services
             .Configure<KeycloakData>(builder.Configuration.GetSection("Keycloak"));
+
+builder.Services.AddScoped<Cart, SessionCart>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient<ITokenAccessor, KeycloakTokenAccessor>();
 builder.Services.AddHttpClient<IAuthService, KeycloakAuthService>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 var keycloakData =
         builder.Configuration.GetSection("Keycloak").Get<KeycloakData>();
 builder.Services
@@ -68,6 +77,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

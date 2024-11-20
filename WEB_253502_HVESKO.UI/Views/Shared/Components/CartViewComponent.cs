@@ -1,21 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WEB_253502_HVESKO.Domain.Entities;
 
 namespace YourNamespace.Views.Shared.Components
 {
     public class CartViewComponent : ViewComponent
     {
+        private readonly Cart _cart;
+
+        public CartViewComponent(Cart cart)
+        {
+            _cart = cart;
+        }
+
         public IViewComponentResult Invoke()
         {
-            var cartTotal = 0; // Стоимость корзины
-            var itemCount = 0; // Количество товаров в корзине
-
-            var model = new
+            var cartModel = new
             {
-                Total = cartTotal,
-                Count = itemCount
+                ItemCount = _cart.Count,
+                TotalPrice = _cart.TotalPrice
             };
 
-            return View(model);
+            return View(cartModel);
         }
     }
 }

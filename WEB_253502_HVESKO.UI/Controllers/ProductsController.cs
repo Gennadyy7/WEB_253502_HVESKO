@@ -5,6 +5,7 @@ using WEB_253502_HVESKO.UI.Services.ProductService;
 
 namespace WEB_253502_HVESKO.UI.Controllers
 {
+    [Route("Catalog")]
     public class ProductsController : Controller
     {
         private readonly IProductService _productService;
@@ -15,6 +16,8 @@ namespace WEB_253502_HVESKO.UI.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
+
+        [HttpGet("{category?}")]
         public async Task<IActionResult> Index([FromServices] IConfiguration config, string category, int pageNo = 1)
         {
             var categoriesResponse = await _categoryService.GetCategoryListAsync();

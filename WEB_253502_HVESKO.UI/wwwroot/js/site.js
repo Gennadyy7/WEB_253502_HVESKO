@@ -11,10 +11,10 @@
                     // Получаем номер страницы и категорию из URL
                     var urlParams = new URLSearchParams(link.search);  // Используем .search, а не split
                     var pageNo = urlParams.get('pageNo');
-                    var category = urlParams.get('category');
+                    category = link.pathname.split('/')[2];
 
                     // Выполняем асинхронный запрос
-                    fetch(`/Products?pageNo=${pageNo}&category=${category}`, {
+                    fetch(`/Catalog/${category}?pageNo=${pageNo}`, {
                         method: 'GET',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'  // Добавляем заголовок, чтобы запрос был распознан как Ajax
