@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Serilog;
 using WEB_253502_HVESKO.Domain.Entities;
 using WEB_253502_HVESKO.UI;
 using WEB_253502_HVESKO.UI.Extensions;
 using WEB_253502_HVESKO.UI.HelperClasses;
+using WEB_253502_HVESKO.UI.Middlewares;
 using WEB_253502_HVESKO.UI.Services.Authentication;
 using WEB_253502_HVESKO.UI.Services.Authorization;
 using WEB_253502_HVESKO.UI.Services.Cart;
@@ -68,7 +69,14 @@ builder.Services
     options.MetadataAddress = $"{keycloakData.Host}/realms/{keycloakData.Realm}/.well-known/openid-configuration";
 });
 
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day));
+
 var app = builder.Build();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
