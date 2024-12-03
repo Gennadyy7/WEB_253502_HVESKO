@@ -21,7 +21,7 @@
     }
 
     function bindPaginationEvents() {
-        if (window.location.pathname.startsWith('/Products/')) {
+        if (window.location.pathname.startsWith('/Catalog')) {
             document.querySelectorAll(pagerLinkClass).forEach(link => {
                 link.addEventListener('click', handlePaginationClick);
             });
